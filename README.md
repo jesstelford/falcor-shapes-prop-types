@@ -3,6 +3,8 @@
 Conversion from [falcor-shapes](https://github.com/marcello3d/falcor-shapes) to
 [React propTypes](https://facebook.github.io/react/docs/reusable-components.html#prop-validation).
 
+[![NPM](https://nodei.co/npm/falcor-shapes-prop-types.png?downloads=true)](https://nodei.co/npm/falcor-shapes-prop-types/)
+
 ## Usage
 
 ```javascript
