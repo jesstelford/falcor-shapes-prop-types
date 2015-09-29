@@ -1,0 +1,27 @@
+{
+  "name": "falcor-shapes-prop-types",
+  "version": "1.0.0",
+  "description": "Conversion from falcor-shapes to React propTypes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "react": "^0.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jesstelford/falcor-shapes-prop-types.git"
+  },
+  "keywords": [
+    "falcor",
+    "shape",
+    "react"
+  ],
+  "author": "Jess Telford <hi@jes.st> (http://jes.st)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jesstelford/falcor-shapes-prop-types/issues"
+  },
+  "homepage": "https://github.com/jesstelford/falcor-shapes-prop-types#readme"
+}
