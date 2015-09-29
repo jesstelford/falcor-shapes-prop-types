@@ -1,6 +1,7 @@
 # Falcor Shapes Prop Types
 
-Conversion from falcor-shapes to React propTypes.
+Conversion from [falcor-shapes](https://github.com/marcello3d/falcor-shapes) to
+[React propTypes](https://facebook.github.io/react/docs/reusable-components.html#prop-validation).
 
 ## Usage
 
