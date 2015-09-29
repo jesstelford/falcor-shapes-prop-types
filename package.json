@@ -1,6 +1,6 @@
 {
   "name": "falcor-shapes-prop-types",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Conversion from falcor-shapes to React propTypes",
   "main": "index.js",
   "scripts": {
