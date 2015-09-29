@@ -44,3 +44,10 @@ var propTypes = {
   )
 }
 ```
+
+## Contributing
+
+Pull Requests are welcome!
+
+This is a truly open open source project: If your contributions are of a high
+quality, I will give you push permissions to make direct changes in the future.
