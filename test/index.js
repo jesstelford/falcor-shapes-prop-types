@@ -22,7 +22,7 @@ describe('Conversion function', function() {
     var warnStub;
 
     beforeEach('stub console.warn', function() {
-      warnStub = sinon.stub(console, 'warn')
+      warnStub = sinon.stub(console, 'warn');
     });
 
     afterEach('restore stub', function() {
@@ -236,6 +236,28 @@ describe('Conversion function', function() {
         expect(warnStub.calledOnce).to.equal(true);
         expect(call.args[0]).to.match(/Failed propType/);
         expect(call.args[0]).to.match(/Invalid prop `people` of type `string` supplied to `Component`, expected an array/);
+
+      });
+
+      // FIXME: This test fails, but it does NOT fail when the exact same
+      // situation is run in the browser. WTF?
+      // ie; Here, we expect it to warn about `name` missing. It does not.
+      // In the browser, we expect the same, and it DOES :(
+      it.skip('should fail when array shape incorrect', function() {
+
+        var props = {people: [{blah: 'hi'}]},
+            call;
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        call = warnStub.getCall(0);
+
+        expect(warnStub.calledOnce).to.equal(true);
+        expect(call.args[0]).to.match(/Failed propType/);
+        expect(call.args[0]).to.match(/Invalid prop `people` of type `object` supplied to `Component`, expected an array/);
 
       });
 
