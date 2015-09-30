@@ -175,9 +175,23 @@ describe('Conversion function', function() {
 
       });
 
-      it('should pass', function() {
+      it('should pass with correctly formed array elements', function() {
 
         var props = {people: [{name: 'hi'}]},
+            call;
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        expect(warnStub.called).to.equal(false);
+
+      });
+
+      it('should pass with empty array', function() {
+
+        var props = {people: []},
             call;
 
         // rendering triggers the warning
@@ -194,7 +208,7 @@ describe('Conversion function', function() {
         var props = {people: {name: 'hi'}},
             call;
 
-        // rendering triggers the warning
+       // rendering triggers the warning
         testUtils.renderIntoDocument(
           react.createElement(Component, props)
         );
@@ -204,6 +218,24 @@ describe('Conversion function', function() {
         expect(warnStub.calledOnce).to.equal(true);
         expect(call.args[0]).to.match(/Failed propType/);
         expect(call.args[0]).to.match(/Invalid prop `people` of type `object` supplied to `Component`, expected an array/);
+
+      });
+
+      it('should fail when non-array passed instead of array', function() {
+
+        var props = {people: 'hi'},
+            call;
+
+       // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        call = warnStub.getCall(0);
+
+        expect(warnStub.calledOnce).to.equal(true);
+        expect(call.args[0]).to.match(/Failed propType/);
+        expect(call.args[0]).to.match(/Invalid prop `people` of type `string` supplied to `Component`, expected an array/);
 
       });
 
