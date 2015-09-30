@@ -33,7 +33,7 @@ function calculatePropTypes(path) {
       propTypes = React.PropTypes.arrayOf(
         // recurse with the correct sub-shape
         calculatePropTypes(path['$'][1])
-      );
+      ).isRequired;
 
     } else {
 
@@ -46,7 +46,7 @@ function calculatePropTypes(path) {
       })
 
       // it's a shape
-      propTypes = React.PropTypes.shape(innerShape);
+      propTypes = React.PropTypes.shape(innerShape).isRequired;
 
     }
 
