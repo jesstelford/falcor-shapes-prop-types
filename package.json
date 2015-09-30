@@ -4,7 +4,7 @@
   "description": "Conversion from falcor-shapes to React propTypes",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/"
   },
   "peerDependencies": {
     "react": "^0.13"
@@ -23,5 +23,12 @@
   "bugs": {
     "url": "https://github.com/jesstelford/falcor-shapes-prop-types/issues"
   },
-  "homepage": "https://github.com/jesstelford/falcor-shapes-prop-types#readme"
+  "homepage": "https://github.com/jesstelford/falcor-shapes-prop-types#readme",
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "jsdom": "^6.5.1",
+    "mocha": "^2.3.3",
+    "react": "^0.13.3",
+    "sinon": "^1.17.1"
+  }
 }
