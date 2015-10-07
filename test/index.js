@@ -1,9 +1,8 @@
 var sinon = require('sinon'),
     react = require('react/addons'),
     expect = require('chai').expect,
+    testUtils = require('react-addons-test-utils'),
     falcorShapesPropTypes = require('../index');
-
-var testUtils = react.addons.TestUtils;
 
 describe('Conversion function', function() {
 
@@ -20,13 +19,37 @@ describe('Conversion function', function() {
   describe('propType validation', function() {
 
     var warnStub;
+    var errorStub;
+
+    function assertWarnOrError(shouldCall, matches) {
+
+      var call;
+
+      // 0.13.x uses console.warn
+      // 0.14.x uses console.error
+      if (warnStub.called) {
+        call = warnStub.getCall(0);
+      } else if (errorStub.called) {
+        call = errorStub.getCall(0);
+      }
+
+      expect(!!call).to.equal(shouldCall);
+
+      if (shouldCall) {
+        matches.forEach(function(match) {
+          expect(call.args[0]).to.match(match);
+        });
+      }
+    }
 
     beforeEach('stub console.warn', function() {
       warnStub = sinon.stub(console, 'warn');
+      errorStub = sinon.stub(console, 'error');
     });
 
     afterEach('restore stub', function() {
       console.warn.restore();
+      console.error.restore();
     });
 
     describe('simple object', function() {
@@ -55,26 +78,23 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        expect(warnStub.called).to.equal(false);
+        assertWarnOrError(false);
 
       })
 
       it('should fail when missing prop', function() {
 
-        var props = {},
-            call;
+        var props = {};
 
         // rendering triggers the warning
         testUtils.renderIntoDocument(
           react.createElement(Component, props)
         );
 
-        // Get the warning printed
-        call = warnStub.getCall(0);
-
-        expect(warnStub.calledOnce).to.equal(true);
-        expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Required prop `people` was not specified in `Component`/);
+        assertWarnOrError(true, [
+          /Failed propType/,
+          /Required prop `.*` was not specified in `Component`/
+        ]);
 
       });
 
@@ -108,7 +128,7 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        expect(warnStub.called).to.equal(false);
+        assertWarnOrError(false);
 
       })
 
@@ -122,12 +142,10 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        // Get the warning printed
-        call = warnStub.getCall(0);
-
-        expect(warnStub.calledOnce).to.equal(true);
-        expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Required prop `name` was not specified in `Component`/);
+        assertWarnOrError(true, [
+          /Failed propType/,
+          /Required prop `.*` was not specified in `Component`/
+        ])
 
       });
 
@@ -141,12 +159,10 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        // Get the warning printed
-        call = warnStub.getCall(0);
-
-        expect(warnStub.calledOnce).to.equal(true);
-        expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Invalid prop `people` of type `string` supplied to `Component`, expected `object`/);
+        assertWarnOrError(true, [
+          /Failed propType/,
+          /Invalid prop `.*` of type `string` supplied to `Component`, expected `object`/
+        ])
 
       });
 
@@ -188,7 +204,7 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        expect(warnStub.called).to.equal(false);
+        assertWarnOrError(false);
 
       });
 
@@ -204,7 +220,7 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        expect(warnStub.called).to.equal(false);
+        assertWarnOrError(false);
 
       });
 
@@ -218,7 +234,7 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        expect(warnStub.called).to.equal(false);
+        assertWarnOrError(false);
 
       });
 
@@ -232,7 +248,7 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        expect(warnStub.called).to.equal(false);
+        assertWarnOrError(false);
 
       });
 
@@ -246,11 +262,10 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        call = warnStub.getCall(0);
-
-        expect(warnStub.calledOnce).to.equal(true);
-        expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Invalid prop `people` of type `array` supplied to `Component`, expected `object`/);
+        assertWarnOrError(true, [
+          /Failed propType/,
+          /Invalid prop `.*` of type `array` supplied to `Component`, expected `object`/
+        ]);
 
       });
 
@@ -268,11 +283,10 @@ describe('Conversion function', function() {
           react.createElement(Component, props)
         );
 
-        call = warnStub.getCall(0);
-
-        expect(warnStub.calledOnce).to.equal(true);
-        expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Warning: Failed propType: Invalid prop `0` of type `string` supplied to `Component`, expected `object`./);
+        assertWarnOrError(true, [
+          /Failed propType/,
+          /Warning: Failed propType: Invalid prop `.*` of type `string` supplied to `Component`, expected `object`./
+        ])
 
       });
     });
