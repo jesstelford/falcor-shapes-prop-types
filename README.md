@@ -45,6 +45,13 @@ var propTypes = {
 }
 ```
 
+## Compatibility
+
+Tested & works with React versions:
+
+* 0.13.x
+* 0.14.x
+
 ## Contributing
 
 Pull Requests are welcome!
