@@ -163,7 +163,7 @@ describe('Conversion function', function() {
           propTypes: falcorShapesPropTypes({
             people: {
               $: [
-                {from: 0, to: 10},
+                {from: 0, to: 1},
                 {
                   name: true
                 }
@@ -175,9 +175,12 @@ describe('Conversion function', function() {
 
       });
 
-      it('should pass with correctly formed array elements', function() {
+      it('should pass with correctly formed array-like object', function() {
 
-        var props = {people: [{name: 'hi'}]},
+        var props = {people: {
+              0: {name: 'hi'},
+              1: {name: 'ho'}
+            }},
             call;
 
         // rendering triggers the warning
@@ -189,25 +192,55 @@ describe('Conversion function', function() {
 
       });
 
-      it('should pass with empty array', function() {
+      it('should pass with some indecies missing', function() {
+
+        var props = {people: {
+              0: {name: 'hi'}
+            }},
+            call;
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        expect(warnStub.called).to.equal(false);
+
+      });
+
+      it('should pass with empty array-like object', function() {
+
+        var props = {people: {}},
+            call;
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        expect(warnStub.called).to.equal(false);
+
+      });
+
+      it('should pass with array-like object containing unrelated keys', function() {
+
+        var props = {people: {hi: 'ho'}},
+            call;
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        expect(warnStub.called).to.equal(false);
+
+      });
+
+      it('should fail when actual array passed instead of array-like object', function() {
 
         var props = {people: []},
             call;
 
-        // rendering triggers the warning
-        testUtils.renderIntoDocument(
-          react.createElement(Component, props)
-        );
-
-        expect(warnStub.called).to.equal(false);
-
-      });
-
-      it('should fail when object passed instead of array', function() {
-
-        var props = {people: {name: 'hi'}},
-            call;
-
        // rendering triggers the warning
         testUtils.renderIntoDocument(
           react.createElement(Component, props)
@@ -217,35 +250,17 @@ describe('Conversion function', function() {
 
         expect(warnStub.calledOnce).to.equal(true);
         expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Invalid prop `people` of type `object` supplied to `Component`, expected an array/);
+        expect(call.args[0]).to.match(/Invalid prop `people` of type `array` supplied to `Component`, expected `object`/);
 
       });
 
-      it('should fail when non-array passed instead of array', function() {
+      it('should fail when array-like element shape incorrect', function() {
 
-        var props = {people: 'hi'},
-            call;
-
-       // rendering triggers the warning
-        testUtils.renderIntoDocument(
-          react.createElement(Component, props)
-        );
-
-        call = warnStub.getCall(0);
-
-        expect(warnStub.calledOnce).to.equal(true);
-        expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Invalid prop `people` of type `string` supplied to `Component`, expected an array/);
-
-      });
-
-      // FIXME: This test fails, but it does NOT fail when the exact same
-      // situation is run in the browser. WTF?
-      // ie; Here, we expect it to warn about `name` missing. It does not.
-      // In the browser, we expect the same, and it DOES :(
-      it.skip('should fail when array shape incorrect', function() {
-
-        var props = {people: [{blah: 'hi'}]},
+        var props = {
+              people: {
+                0: 'hi'
+              }
+            },
             call;
 
         // rendering triggers the warning
@@ -257,7 +272,130 @@ describe('Conversion function', function() {
 
         expect(warnStub.calledOnce).to.equal(true);
         expect(call.args[0]).to.match(/Failed propType/);
-        expect(call.args[0]).to.match(/Invalid prop `people` of type `object` supplied to `Component`, expected an array/);
+        expect(call.args[0]).to.match(/Warning: Failed propType: Invalid prop `0` of type `string` supplied to `Component`, expected `object`./);
+
+      });
+    });
+
+    // Array ranges should be ended with `to` or `length`
+    describe('incorrect bounds for collection', function() {
+
+      it('should work when bounds start at index 0', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 0, to: 10},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.not.throw;
+
+      });
+
+      it('should work when bounds start at index non-0', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 5, to: 10},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.not.throw;
+
+      });
+
+      it('should work when length === 0', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 0, length: 0},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.not.throw;
+
+      });
+
+      it('should work when length > 0', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 0, length: 7},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.not.throw;
+
+      });
+
+      it('should throw when end bounds missing', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 0},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.throw;
+
+      });
+
+      it('should throw when end bounds less than from', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 10, to: 4},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.throw;
+
+      });
+
+      it('should throw when length < 0', function() {
+
+        var shape = {
+          people: {
+            $: [
+              {from: 10, length: -1},
+              {
+                name: true
+              }
+            ]
+          }
+        };
+
+        expect(falcorShapesPropTypes.bind(this, shape)).to.throw;
 
       });
 

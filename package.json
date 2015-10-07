@@ -30,5 +30,8 @@
     "mocha": "^2.3.3",
     "react": "^0.13.3",
     "sinon": "^1.17.1"
+  },
+  "dependencies": {
+    "object-assign": "^4.0.1"
   }
 }
