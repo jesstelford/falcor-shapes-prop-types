@@ -15,13 +15,19 @@ function transform(obj, callback) {
   return result;
 }
 
-module.exports = function falcorShapesPropTypes(path) {
+/**
+ * @param path Object The Falcor Shapes Path Object
+ * @param optional Boolean Set every path as optional
+ *
+ * @return Object The propTypes object ready to add to a React Component
+ */
+module.exports = function falcorShapesPropTypes(path, optional) {
   return transform(path, function(result, subPath, key) {
-    result[key] = calculatePropTypes(subPath)
+    result[key] = calculatePropTypes(subPath, !!optional)
   });
 }
 
-function calculatePropTypes(path, optional) {
+function calculatePropTypes(path, optional, forceOptional) {
 
   var key,
       keyTo,
@@ -47,7 +53,7 @@ function calculatePropTypes(path, optional) {
 
       // recurse once - the shape is the same for every array item.
       // Also - make sure it's optional
-      innerPropTypes = calculatePropTypes(path['$'][1], true);
+      innerPropTypes = calculatePropTypes(path['$'][1], optional, true);
 
       for (key = arrayBounds.from; key <= keyTo; key++) {
         innerShape[key] = innerPropTypes;
@@ -64,14 +70,14 @@ function calculatePropTypes(path, optional) {
       }
 
       // recurse with a regular object
-      result[key] = calculatePropTypes(subPath);
+      result[key] = calculatePropTypes(subPath, optional);
 
     }));
 
     // it's a shape
     propTypes = React.PropTypes.shape(innerShape);
 
-    if (!optional) {
+    if (!(optional || forceOptional)) {
       propTypes = propTypes.isRequired;
     }
 
@@ -80,7 +86,7 @@ function calculatePropTypes(path, optional) {
   } else {
 
     // leaf node, stop recursion
-    if (optional) {
+    if (optional || forceOptional) {
       return React.PropTypes.any;
     } else {
       return React.PropTypes.any.isRequired

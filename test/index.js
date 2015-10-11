@@ -100,6 +100,54 @@ describe('Conversion function', function() {
 
     });
 
+    describe('optionality', function() {
+
+      var Component;
+
+      before('setup component', function() {
+
+        Component = react.createClass({
+          displayName: 'Component',
+          propTypes: falcorShapesPropTypes(
+            {
+              people: true
+            },
+            true
+          ),
+          render: function() { return react.createElement('div', {}, 'hi'); }
+        });
+
+      });
+
+      it('should pass', function() {
+
+        var props = {people: 'hi'},
+            call;
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        assertWarnOrError(false);
+
+      })
+
+      it('should pass when missing prop', function() {
+
+        var props = {};
+
+        // rendering triggers the warning
+        testUtils.renderIntoDocument(
+          react.createElement(Component, props)
+        );
+
+        assertWarnOrError(false);
+
+      });
+
+    });
+
     describe('nested object', function() {
 
       var Component;
