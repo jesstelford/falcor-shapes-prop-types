@@ -38,6 +38,7 @@ function calculatePropTypes(path, optional, forceOptional) {
 
   if (Object.prototype.toString.call(path) === '[object Object]') {
 
+    // Check for the special collection marker
     if (Object.prototype.toString.call(path['$']) === '[object Array]') {
 
       arrayBounds = path['$'][0];
@@ -55,6 +56,8 @@ function calculatePropTypes(path, optional, forceOptional) {
       // Also - make sure it's optional
       innerPropTypes = calculatePropTypes(path['$'][1], optional, true);
 
+      // Flacor returns items as an object keyed with the requested incidies.
+      // This is to support sparse arrays, so we must do the same here.
       for (key = arrayBounds.from; key <= keyTo; key++) {
         innerShape[key] = innerPropTypes;
       }
