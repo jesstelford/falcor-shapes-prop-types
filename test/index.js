@@ -1,5 +1,5 @@
 var sinon = require('sinon'),
-    react = require('react/addons'),
+    react = require('react'),
     expect = require('chai').expect,
     testUtils = require('react-addons-test-utils'),
     falcorShapesPropTypes = require('../index');
