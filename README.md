@@ -33,15 +33,53 @@ This is the equivalent of writing:
 
 ```javascript
 var propTypes = {
-  people: React.PropTypes.arrayOf(
-    React.PropTypes.shape({
+  people: React.PropTypes.shape({
+    length: React.PropTypes.any.isRequired,
+    '0': React.PropTypes.shape({
       name: React.PropTypes.shape({
         first: React.PropTypes.any.isRequired,
         last: React.PropTypes.any.isRequired
       }),
       age: React.PropTypes.any.isRequired
     })
-  )
+    '1': // Repeated
+    // ...
+    '100': // ...
+  })
+}
+```
+
+Note that we end up with a `.shape` for key `people`. This is because Falcor
+does not return a real array for collections. Instead it returns an object keyed
+with the indicies requested, which is how Falcor supports sparse arrays.
+
+You'll also notice these indicies are not marked as `.isRequired` since they may
+not be returned by Falcor in its dataset.
+
+### Optionality
+
+You can force all props to be optional (ie; *not* `.isRequired`) by setting the
+second parameter of `falcorShapesPropTypes` to `false`:
+
+```javascript
+var falcorShapesPropTypes = require('falcor-shapes-prop-types');
+
+var shape = {
+  people: {
+    name: true
+  }
+};
+
+var propTypes = falcorShapesPropTypes(shape, false);
+```
+
+This is the equivalent of writing:
+
+```javascript
+var propTypes = {
+  people: React.PropTypes.shape({
+    name: React.PropTypes.any // no .isRequired
+  }) // no .isRequired
 }
 ```
 
