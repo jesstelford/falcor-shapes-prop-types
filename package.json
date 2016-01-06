@@ -7,7 +7,7 @@
     "test": "mocha ./test/"
   },
   "peerDependencies": {
-    "react": "^0.13"
+    "react": "^0.13||^0.14"
   },
   "repository": {
     "type": "git",
